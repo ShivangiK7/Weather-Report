@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Open Sans", sans-serif;
+        background: linear-gradient(to right, #00b4d8, #0077b6);
+        color: #fff;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+      }
+      .container {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 30px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      input {
+        padding: 10px;
+        font-size: 1.2rem;
+        width: 80%;
+        max-width: 300px;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #00b4d8;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #0096c7;
+      }
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1.1rem;
+      }
+      p {
+        margin: 10px 0;
+      }
+      .error {
+        color: red;
+        font-size: 1.2rem;
+        margin-top: 10px;
+      }
+      .success {
+        color: #00e676;
+        font-size: 1.2rem;
+        margin-top: 10px;
+      }
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2rem;
+        }
+        input {
+          width: 80%;
+        }
+        button {
+          width: 80%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Weather App</h1>
+      <input type="text" id="cityName" placeholder="Enter city name" />
+      <button onclick="getWeather()">Get Weather</button>
+
+      <div id="result"></div>
+    </div>
+
+    <script>
+      function getWeather() {
+        const city = document.getElementById("cityName").value;
+        if (!city) {
+          alert("Please enter a city name!");
+          return;
+        }
+
+        fetch(`/get_weather?city=${city}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const resultDiv = document.getElementById("result");
+
+            if (data.error) {
+              resultDiv.innerHTML = `
+                <p class="error">Error: ${data.error}</p>
+              `;
+            } else {
+              resultDiv.innerHTML = `
+                <p class="success"><strong>Temperature:</strong> ${data.temperature}</p>
+                <p><strong>Description:</strong> ${data.description}</p>
+                <p><strong>Humidity:</strong> ${data.humidity}</p>
+                <p><strong>Wind Speed:</strong> ${data.wind_speed}</p>
+              `;
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("result").innerHTML = `
+              <p class="error">Failed to fetch weather data. Please try again.</p>
+            `;
+          });
+      }
+    </script>
+  </body>
+</html>
